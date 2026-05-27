@@ -1,0 +1,31 @@
+{
+  "name": "my-ts-node-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ejercicio2": "ts-node ejercicio2.ts",
+    "ejercicio3": "ts-node ejercicio3.ts",
+    "ejercicio4": "ts-node ejercicio4.ts",
+    "ejercicio5": "ts-node ejercicio5.ts",
+    "ejercicio6": "ts-node ejercicio6.ts",
+    "ejercicio7": "ts-node ejercicio7.ts",
+    "ejercicio8": "ts-node ejercicio8.ts",
+    "ejercicio9": "ts-node ejercicio9.ts",
+    "ejercicio10": "ts-node ejercicio10.ts",
+    "ejercicio11": "ts-node ejercicio11.ts",
+    "ejercicio12": "ts-node ejercicio12.ts",
+    "ejercicio13": "ts-node ejercicio13.ts",
+    "ejercicio14": "ts-node ejercicio14.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  }
+}
