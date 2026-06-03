@@ -59,7 +59,7 @@ const empleados: Empleado[] = [
 console.log("===== INFORMACIÓN DE EMPLEADOS =====\n");
 
 // Recorrer usando polimorfismo
-empleados.forEach((empleado, index) => {
+empleados.forEach((empleado) => {
     empleado.mostrarInformacion();
     console.log(`Salario Total: $${empleado.calcularSalario()}`);
     console.log("---");

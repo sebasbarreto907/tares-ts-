@@ -1,24 +1,38 @@
 class Libro {
-  constructor(
-    public isbn: string,
-    public titulo: string,
-    public autor: string,
-    public disponible: boolean = true,
-  ) {}
+  public id: number;
+  public titulo: string;
+  public autor: string;
+  public disponible: boolean;
+
+  constructor(id: number, titulo: string, autor: string, disponible: boolean = true) {
+    this.id = id;
+    this.titulo = titulo;
+    this.autor = autor;
+    this.disponible = disponible;
+  }
 }
 
 class Usuario {
-  constructor(public id: string, public nombre: string) {}
+  public id: string;
+  public nombre: string;
+
+  constructor(id: string, nombre: string) {
+    this.id = id;
+    this.nombre = nombre;
+  }
 }
 
 class Prestamo {
   public fechaDevolucion?: Date;
+  public libro: Libro;
+  public usuario: Usuario;
+  public fechaPrestamo: Date;
 
-  constructor(
-    public libro: Libro,
-    public usuario: Usuario,
-    public fechaPrestamo: Date = new Date(),
-  ) {}
+  constructor(libro: Libro, usuario: Usuario, fechaPrestamo: Date = new Date()) {
+    this.libro = libro;
+    this.usuario = usuario;
+    this.fechaPrestamo = fechaPrestamo;
+  }
 }
 
 class Biblioteca {
@@ -27,9 +41,9 @@ class Biblioteca {
   private prestamos: Prestamo[] = [];
 
   agregarLibro(libro: Libro): void {
-    const existe = this.libros.some((l) => l.isbn === libro.isbn);
+    const existe = this.libros.some((l) => l.id === libro.id);
     if (existe) {
-      console.log(`El libro con ISBN ${libro.isbn} ya existe.`);
+      console.log(`El libro con ID ${libro.id} ya existe.`);
       return;
     }
 
@@ -37,25 +51,18 @@ class Biblioteca {
     console.log(`Libro agregado: ${libro.titulo} (${libro.autor})`);
   }
 
-  eliminarLibro(isbn: string): void {
-    const indice = this.libros.findIndex((libro) => libro.isbn === isbn);
-    if (indice === -1) {
-      console.log(`No se encontró el libro con ISBN ${isbn}.`);
-      return;
-    }
-
-    const libroEliminado = this.libros.splice(indice, 1)[0]!;
-    console.log(`Libro eliminado: ${libroEliminado.titulo}`);
-  }
-
-  buscarLibro(query: string): Libro[] {
-    const texto = query.trim().toLowerCase();
-    return this.libros.filter(
-      (libro) =>
-        libro.titulo.toLowerCase().includes(texto) ||
-        libro.autor.toLowerCase().includes(texto),
-    );
-  }
+  buscarLibroPorTitulo(titulo: string): Libro[] {
+  const texto = titulo.trim().toLowerCase();
+  return this.libros.filter((libro) =>
+    libro.titulo.toLowerCase().includes(texto),
+  );
+}
+  buscarLibroPorAutor(autor: string): Libro[] {
+  const texto = autor.trim().toLowerCase();
+  return this.libros.filter((libro) =>
+    libro.autor.toLowerCase().includes(texto),
+  );
+}
 
   listarLibros(): Libro[] {
     return [...this.libros];
@@ -79,14 +86,14 @@ class Biblioteca {
     );
   }
 
-  listarUsuarios(): Usuario[] {
-    return [...this.usuarios];
+  listarPrestamosActivos(): Prestamo[] {
+    return this.prestamos.filter((p) => !p.fechaDevolucion);
   }
 
-  prestarLibro(isbn: string, nombreUsuario: string): void {
-    const libro = this.libros.find((l) => l.isbn === isbn);
+  prestarLibro(id: number, nombreUsuario: string): void {
+    const libro = this.libros.find((l) => l.id === id);
     if (!libro) {
-      console.log(`No existe el libro con ISBN ${isbn}.`);
+      console.log(`No existe el libro con ID ${id}.`);
       return;
     }
 
@@ -111,17 +118,17 @@ class Biblioteca {
     );
   }
 
-  devolverLibro(isbn: string, nombreUsuario: string): void {
+  devolverLibro(id: number, nombreUsuario: string): void {
     const prestamo = this.prestamos.find(
       (p) =>
-        p.libro.isbn === isbn &&
+        p.libro.id === id &&
         p.usuario.nombre.toLowerCase() === nombreUsuario.toLowerCase() &&
         !p.fechaDevolucion,
     );
 
     if (!prestamo) {
       console.log(
-        `No se encontró un préstamo activo para el libro con ISBN ${isbn} y el usuario ${nombreUsuario}.`,
+        `No se encontró un préstamo activo para el libro con ID ${id} y el usuario ${nombreUsuario}.`,
       );
       return;
     }
@@ -143,7 +150,7 @@ function mostrarLibros(libros: Libro[]): void {
   console.log("\nLibros disponibles en la biblioteca:");
   libros.forEach((libro) => {
     console.log(
-      `- ${libro.titulo} | Autor: ${libro.autor} | ISBN: ${libro.isbn} | Disponible: ${libro.disponible ? "Sí" : "No"}`,
+      `- ${libro.titulo} | Autor: ${libro.autor} | ID: ${libro.id} | Disponible: ${libro.disponible ? "Sí" : "No"}`,
     );
   });
 }
@@ -170,28 +177,28 @@ function mostrarPrestamos(prestamos: Prestamo[]): void {
 function main(): void {
   const biblioteca = new Biblioteca();
 
-  biblioteca.agregarLibro(new Libro("978-0132350884", "Clean Code", "Robert C. Martin"));
-  biblioteca.agregarLibro(new Libro("978-0201616224", "The Pragmatic Programmer", "Andrew Hunt"));
-  biblioteca.agregarLibro(new Libro("978-0131103627", "The C Programming Language", "Brian W. Kernighan"));
-  biblioteca.agregarLibro(new Libro("978-1491950296", "Programming JavaScript Applications", "Eric Elliott"));
-  biblioteca.agregarLibro(new Libro("978-0262033848", "Introduction to Algorithms", "Thomas H. Cormen"));
+  biblioteca.agregarLibro(new Libro(1, "Clean Code", "Robert C. Martin"));
+  biblioteca.agregarLibro(new Libro(2, "The Pragmatic Programmer", "Andrew Hunt"));
+  biblioteca.agregarLibro(new Libro(3, "The C Programming Language", "Brian W. Kernighan"));
+  biblioteca.agregarLibro(new Libro(4, "Programming JavaScript Applications", "Eric Elliott"));
+  biblioteca.agregarLibro(new Libro(5, "Introduction to Algorithms", "Thomas H. Cormen"));
 
   biblioteca.registrarUsuario(new Usuario("U001", "María López"));
   biblioteca.registrarUsuario(new Usuario("U002", "Juan Pérez"));
   biblioteca.registrarUsuario(new Usuario("U003", "Ana García"));
 
   mostrarLibros(biblioteca.listarLibros());
-  mostrarUsuarios(biblioteca.listarUsuarios());
+  mostrarPrestamos(biblioteca.listarPrestamosActivos());
 
   console.log("\nCaso 2: Préstamo de Clean Code a María López");
-  biblioteca.prestarLibro("978-0132350884", "María López");
+  biblioteca.prestarLibro(1, "María López");
   mostrarLibros(biblioteca.listarLibros());
 
   console.log("\nCaso 3: Intentar prestar el mismo libro otra vez");
-  biblioteca.prestarLibro("978-0132350884", "Juan Pérez");
+  biblioteca.prestarLibro(1, "Juan Pérez");
 
   console.log("\nCaso 4: Devolver el libro");
-  biblioteca.devolverLibro("978-0132350884", "María López");
+  biblioteca.devolverLibro(1, "María López");
   mostrarLibros(biblioteca.listarLibros());
 
   console.log("\nCaso 5: Listar préstamos");
